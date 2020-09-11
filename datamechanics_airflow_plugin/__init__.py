@@ -2,4 +2,4 @@
 
 __author__ = """Data Mechanics Engineering Team"""
 __email__ = "engineering@datamechanics.co"
-__version__ = "1.0.8"
+__version__ = "__version__ = "1.0.5""

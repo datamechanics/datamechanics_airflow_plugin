@@ -42,7 +42,7 @@ setup(
     ),
     setup_requires=setup_requirements,
     url="https://github.com/datamechanics/datamechanics_airflow_plugin",
-    version="1.0.8",
+    version=""1.0.5"",
     zip_safe=False,
     entry_points={
         "airflow.plugins": [

@@ -1,11 +1,10 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+## [1.0.5] 2020-09-11
 
-The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
-and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
+### Fixed
 
-Date format is YYYY-MM-DD
+- Dependency management
 
 ## [1.0.0] 2020-09-11
 
@@ -13,5 +12,7 @@ Date format is YYYY-MM-DD
 
 - Converted the existing plugin into a Python package
 
-[unreleased]: https://github.com/datamechanics/datamechanics_airflow_plugin/compare/v1.0.0...master
+[unreleased]: https://github.com/datamechanics/datamechanics_airflow_plugin/compare/v1.0.6...master
+[1.0.6]: https://github.com/datamechanics/datamechanics_airflow_plugin/compare/v1.0.5...v1.0.6
+[1.0.5]: https://github.com/datamechanics/datamechanics_airflow_plugin/compare/v1.0.0...v1.0.5
 [1.0.0]: https://github.com/datamechanics/datamechanics_airflow_plugin/compare/...v1.0.0
