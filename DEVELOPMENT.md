@@ -18,7 +18,7 @@ Requirements:
 * docker
 * docker-compose
 
-## One-time operation
+## One-time operations
 
 Open Airflow at [http://localhost:8080](http://localhost:8080).
 
