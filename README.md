@@ -14,3 +14,7 @@ A tutorial to configure and use this plugin is available in the [Data Mechanics 
 ## Example DAGs
 
 You can see example DAGs in [here](https://github.com/datamechanics/datamechanics_airflow_plugin/tree/master/example_dags).
+
+## Development
+
+[Development instructions](DEVELOPMENT.md).
