@@ -1,4 +1,7 @@
+import json
 import time
+
+from typing import Dict, Optional, Union
 
 from airflow.exceptions import AirflowException
 from airflow.models import BaseOperator
@@ -16,7 +19,13 @@ class DataMechanicsOperator(BaseOperator):
     """
 
     # Used in airflow.models.BaseOperator
-    template_fields = ("payload",)
+    template_fields = (
+        "app_name",
+        "job_name",
+        "config_template_name",
+        "config_overrides",
+    )
+    template_ext = (".json",)
     # Data Mechanics brand color (blue) under white text
     ui_color = "#1CB1C2"
     ui_fgcolor = "#fff"
@@ -24,16 +33,16 @@ class DataMechanicsOperator(BaseOperator):
     @apply_defaults
     def __init__(
         self,
-        app_name=None,
-        job_name=None,
-        config_template_name=None,
-        config_overrides=None,
-        dm_conn_id="datamechanics_default",
-        polling_period_seconds=10,
-        dm_retry_limit=3,
-        dm_retry_delay=1,
-        do_xcom_push=False,
-        **kwargs
+        app_name: Optional[str] = None,
+        job_name: Optional[str] = None,
+        config_template_name: Optional[str] = None,
+        config_overrides: Optional[Union[Dict, str]] = None,
+        dm_conn_id: str = "datamechanics_default",
+        polling_period_seconds: int = 10,
+        dm_retry_limit: int = 3,
+        dm_retry_delay: int = 1,
+        do_xcom_push: bool = False,
+        **kwargs,
     ):
         """
         Creates a new ``DataMechanicsOperator``.
@@ -45,22 +54,18 @@ class DataMechanicsOperator(BaseOperator):
         self.dm_retry_limit = dm_retry_limit
         self.dm_retry_delay = dm_retry_delay
         self.app_name = None  # will be set from the API response
-
+        self._paylod_app_name = app_name
+        self.job_name = job_name
+        self.config_template_name = config_template_name
+        self.config_overrides = config_overrides
+        self.do_xcom_push = do_xcom_push
         self.payload = {}
-        if app_name is not None:
-            self.payload["appName"] = app_name
-        if job_name is None:
+
+        if self.job_name is None:
             self.log.info(
                 "Setting job name to task id because `job_name` argument is not specified"
             )
-        self.payload["jobName"] = job_name or kwargs["task_id"]
-        if config_template_name is not None:
-            self.payload["configTemplateName"] = config_template_name
-        if config_overrides is not None:
-            self.payload["configOverrides"] = config_overrides
-
-        # self.payload = _deep_string_coerce(self.payload)
-        self.do_xcom_push = do_xcom_push
+            self.job_name = kwargs["task_id"]
 
     def _get_hook(self):
         return DataMechanicsHook(
@@ -69,7 +74,24 @@ class DataMechanicsOperator(BaseOperator):
             retry_delay=self.dm_retry_delay,
         )
 
+    def _build_payload(self):
+        self.payload["jobName"] = self.job_name
+        if self._paylod_app_name is not None:
+            self.payload["appName"] = self._paylod_app_name
+        if self.config_template_name is not None:
+            self.payload["configTemplateName"] = self.config_template_name
+
+        # templated config overrides dict pulled from xcom is a json str
+        if self.config_overrides is not None:
+            if isinstance(self.config_overrides, str):
+                # json standard requires double quotes
+                self.config_overrides = json.loads(
+                    self.config_overrides.replace("'", '"')
+                )
+            self.payload["configOverrides"] = self.config_overrides
+
     def execute(self, context):
+        self._build_payload()
         hook = self._get_hook()
         self.app_name = hook.submit_app(self.payload)
         self._monitor_app(hook, context)
