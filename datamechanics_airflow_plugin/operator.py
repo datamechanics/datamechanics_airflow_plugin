@@ -76,8 +76,8 @@ class DataMechanicsOperator(BaseOperator):
 
     def _build_payload(self):
         self.payload["jobName"] = self.job_name
-        if self._paylod_app_name is not None:
-            self.payload["appName"] = self._paylod_app_name
+        if self._payload_app_name is not None:
+            self.payload["appName"] = self._payload_app_name
         if self.config_template_name is not None:
             self.payload["configTemplateName"] = self.config_template_name
 
