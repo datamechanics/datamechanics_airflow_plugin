@@ -54,7 +54,7 @@ class DataMechanicsOperator(BaseOperator):
         self.dm_retry_limit = dm_retry_limit
         self.dm_retry_delay = dm_retry_delay
         self.app_name = None  # will be set from the API response
-        self._paylod_app_name = app_name
+        self._payload_app_name = app_name
         self.job_name = job_name
         self.config_template_name = config_template_name
         self.config_overrides = config_overrides
