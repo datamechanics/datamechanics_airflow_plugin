@@ -20,15 +20,16 @@ services:
       - LOAD_EX=n
       - EXECUTOR=Local
       - FERNET_KEY=bhGcmHO7vUEzOsOFQQDMLDB5hkf0LKrC_7Gg36keP6c=
+      - AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=false
     logging:
       options:
         max-size: 10m
         max-file: "3"
     volumes:
-      - ./example_dags/:/usr/local/airflow/dags
+      - ./example_dags_airflow1/:/usr/local/airflow/dags
       - .:/datamechanics_airflow_plugin/
-      - ./requirements_docker.txt:/requirements.txt
-      - ./airflow_docker.cfg:/usr/local/airflow/airflow.cfg
+      - ./requirements_dev_airflow1.txt:/requirements.txt
+      - ./dev_airflow1.cfg:/usr/local/airflow/airflow.cfg
     ports:
       - "8080:8080"
     command: webserver

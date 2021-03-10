@@ -5,12 +5,21 @@ black := dev_venv + "/bin/black"
 bumpversion := dev_venv + "/bin/bumpversion"
 
 # Serve the dev environment
-serve: _check_docker_compose
-    docker-compose up --force-recreate
+_serve airflow_version: _check_docker_compose
+    docker-compose -p {{airflow_version}} -f docker-compose_dev_{{airflow_version}}.yaml up --force-recreate --build --remove-orphans
 
 # Stop and remove all containers
-clear_containers: _check_docker_compose
-    docker-compose rm --stop --force -v
+_clear_containers airflow_version: _check_docker_compose
+    docker-compose -f docker-compose_dev_{{airflow_version}}.yaml rm --stop --force -v
+
+# Serve the dev environment for Airflow 1
+serve_airflow1: (_serve 'airflow1')
+
+# Serve the dev environment for Airflow 2
+serve_airflow2: (_serve 'airflow2')
+
+# Stop and remove all containers
+clear_containers: (_clear_containers 'airflow1') (_clear_containers 'airflow2')
 
 _check_docker_compose:
     #!/usr/bin/env bash
