@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0] 2021-03-10
+
+### Added
+
+- Support for Airflow templating in Data Mechanics operator's arguments (by @jj-ookla)
+- Minimal support for Airflow 2 (the code is unchanged, only the doc and the contributor dev environment have changed)
+
 ## [1.0.7] 2020-09-11
 
 ### Changed
