@@ -99,7 +99,10 @@ class DataMechanicsOperator(BaseOperator):
         hook = self._get_hook()
         self.app_name = hook.submit_app(self.payload)
         if self.on_spark_submit_callback:
-            self.on_spark_submit_callback(hook, self.app_name, context)
+            try:
+                self.on_spark_submit_callback(hook, self.app_name, context)
+            except Exception as err:
+                self.log.exception(err)
         self._monitor_app(hook, context)
 
     def on_kill(self):
