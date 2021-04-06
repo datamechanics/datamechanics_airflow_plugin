@@ -1,7 +1,7 @@
 import json
 import time
 
-from typing import Dict, Optional, Union
+from typing import Callable, Dict, Optional, Union
 
 from airflow.exceptions import AirflowException
 from airflow.models import BaseOperator
@@ -42,6 +42,9 @@ class DataMechanicsOperator(BaseOperator):
         dm_retry_limit: int = 3,
         dm_retry_delay: int = 1,
         do_xcom_push: bool = False,
+        on_spark_submit_callback: Optional[
+            Callable[[DataMechanicsHook, str, Dict], None]
+        ] = None,
         **kwargs,
     ):
         """
@@ -59,6 +62,7 @@ class DataMechanicsOperator(BaseOperator):
         self.config_template_name = config_template_name
         self.config_overrides = config_overrides
         self.do_xcom_push = do_xcom_push
+        self.on_spark_submit_callback = on_spark_submit_callback
         self.payload = {}
 
         if self.job_name is None:
@@ -94,6 +98,8 @@ class DataMechanicsOperator(BaseOperator):
         self._build_payload()
         hook = self._get_hook()
         self.app_name = hook.submit_app(self.payload)
+        if self.on_spark_submit_callback:
+            self.on_spark_submit_callback(hook, self.app_name, context)
         self._monitor_app(hook, context)
 
     def on_kill(self):
